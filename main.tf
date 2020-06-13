@@ -19,36 +19,8 @@ resource "azurerm_subnet" "endpoint" {
   enforce_private_link_endpoint_network_policies = true
 }
 
-resource "azurerm_cosmosdb_account" "example" {
-  name                = "${var.prefix}-cosmosdb-example"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  offer_type          = "Standard"
-  kind                = "MongoDB"
-
-  enable_automatic_failover         = false
-  is_virtual_network_filter_enabled = true
-  ip_range_filter                   = "104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26"
-
-  capabilities {
-    name = "EnableMongo"
-  }
-
-  consistency_policy {
-    consistency_level       = "BoundedStaleness"
-    max_interval_in_seconds = 310
-    max_staleness_prefix    = 101000
-  }
-
-  geo_location {
-    prefix            = "${var.prefix}-cosmos-db-customid"
-    location          = azurerm_resource_group.example.location
-    failover_priority = 0
-  }
-}
-
-resource "azurerm_private_endpoint" "example" {
-  name                 = "${var.prefix}-pe"
+resource "azurerm_private_endpoint" "webapp_endpoint" {
+  name                 = "webapp-pep"
   location             = azurerm_resource_group.example.location
   resource_group_name  = azurerm_resource_group.example.name
   subnet_id            = azurerm_subnet.endpoint.id
